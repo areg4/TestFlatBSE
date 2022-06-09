@@ -30,7 +30,7 @@ class GitHubAPIRequests():
         """
             Get all the collaborator of the repo.
             
-            Return: [boolean, json/str, status_code]
+            Return: {"success": boolean, "data": json/str, "status_code": int}
         """
         
         logging.info("Get all Collaborators")
@@ -38,33 +38,57 @@ class GitHubAPIRequests():
             url_request = f'{self.github_api_url}{self.github_repos_path}collaborators'
             response = requests.get(url_request, headers=self.github_headers)
             response.raise_for_status()
-            return True, response.json(), response.status_code
+            return {
+                "success": True, 
+                "data": response.json(), 
+                "status_code": response.status_code
+            }
         except requests.exceptions.Timeout as timeout:
             logging.warning(timeout)
-            return False, "The provider is unavailable. Try again later.", response.status_code
+            return {
+                "success": False, 
+                "data": "The provider is unavailable. Try again later.", 
+                "status_code": response.status_code
+            }
         except Exception as e:
             logging.error(str(e))
-            return False, response,json().get('message', 'Please contact to support.'), response.status_code
+            return {
+                "success": False, 
+                "data": response.json().get('message', 'Please contact to support.'), 
+                "status_code": response.status_code
+            }
         
     
     def get_branches(self):
         """
             Get all branches.
             
-            Return: [boolean, json/str, status_code]
+            Return: {"success": boolean, "data": json/str, "status_code": int}
         """
         logging.info("Get all Branches")
         try:
             url_request = f'{self.github_api_url}{self.github_repos_path}branches'
             response = requests.get(url_request, headers=self.github_headers)
             response.raise_for_status()
-            return True, response.json(), response.status_code
+            return {
+                "success": True, 
+                "data": response.json(), 
+                "status_code": response.status_code
+            }
         except requests.exceptions.Timeout as timeout:
             logging.warning(timeout)
-            return False, "The provider is unavailable. Try again later.", response.status_code
+            return {
+                "success": False, 
+                "data": "The provider is unavailable. Try again later.", 
+                "status_code": response.status_code
+            }
         except Exception as e:
             logging.error(str(e))
-            return False, response,json().get('message', 'Please contact to support.'), response.status_code
+            return {
+                "success": False, 
+                "data": response.json().get('message', 'Please contact to support.'), 
+                "status_code": response.status_code
+            }
         
         
     def get_branch_by_name(self, name: str):
@@ -74,7 +98,7 @@ class GitHubAPIRequests():
             Args:
                 name (str): Name of the branch to get.
                 
-            Return: [boolean, json/str, status_code]
+            Return: {"success": boolean, "data": json/str, "status_code": int}
         """
         
         logging.info("Get a branch by name")
@@ -82,20 +106,32 @@ class GitHubAPIRequests():
             url_request = f'{self.github_api_url}{self.github_repos_path}branches/{name}'
             response = requests.get(url_request, headers=self.github_headers)
             response.raise_for_status()
-            return True, response.json(), response.status_code
+            return {
+                "success": True, 
+                "data": response.json(), 
+                "status_code": response.status_code
+            }
         except requests.exceptions.Timeout as timeout:
             logging.warning(timeout)
-            return False, "The provider is unavailable. Try again later.", response.status_code
+            return {
+                "success": False, 
+                "data": "The provider is unavailable. Try again later.", 
+                "status_code": response.status_code
+            }
         except Exception as e:
             logging.error(str(e))
-            return False, response,json().get('message', 'Please contact to support.'), response.status_code
+            return {
+                "success": False, 
+                "data": response.json().get('message', 'Please contact to support.'), 
+                "status_code": response.status_code
+            }
         
     
     def get_commits(self):
         """
             Get all the commits from the repo
             
-            Return: [boolean, json/str, status_code]
+            Return: {"success": boolean, "data": json/str, "status_code": int}
         """
         
         logging.info("Get all commits")
@@ -103,13 +139,25 @@ class GitHubAPIRequests():
             url_request = f'{self.github_api_url}{self.github_repos_path}commits'
             response = requests.get(url_request, headers=self.github_headers)
             response.raise_for_status()
-            return True, response.json(), response.status_code
+            return {
+                "success": True, 
+                "data": response.json(), 
+                "status_code": response.status_code
+            }
         except requests.exceptions.Timeout as timeout:
             logging.warning(timeout)
-            return False, "The provider is unavailable. Try again later.", response.status_code
+            return {
+                "success": False, 
+                "data": "The provider is unavailable. Try again later.", 
+                "status_code": response.status_code
+            }
         except Exception as e:
             logging.error(str(e))
-            return False, response,json().get('message', 'Please contact to support.'), response.status_code
+            return {
+                "success": False, 
+                "data": response.json().get('message', 'Please contact to support.'), 
+                "status_code": response.status_code
+            }
     
         
     def get_commit_by_sha(self, sha: str):
@@ -119,7 +167,7 @@ class GitHubAPIRequests():
             Args:
                 sha (str): SHA of the commit to get
             
-            Return: [boolean, json/str, status_code]
+            Return: {"success": boolean, "data": json/str, "status_code": int}
         """
         
         logging.info("Get a commit by sha")
@@ -127,13 +175,25 @@ class GitHubAPIRequests():
             url_request = f'{self.github_api_url}{self.github_repos_path}commits/{sha}'
             response = requests.get(url_request, headers=self.github_headers)
             response.raise_for_status()
-            return True, response.json(), response.status_code
+            return {
+                "success": True, 
+                "data": response.json(), 
+                "status_code": response.status_code
+            }
         except requests.exceptions.Timeout as timeout:
             logging.warning(timeout)
-            return False, "The provider is unavailable. Try again later.", response.status_code
+            return {
+                "success": False, 
+                "data": "The provider is unavailable. Try again later.", 
+                "status_code": response.status_code
+            }
         except Exception as e:
             logging.error(str(e))
-            return False, response,json().get('message', 'Please contact to support.'), response.status_code
+            return {
+                "success": False, 
+                "data": response.json().get('message', 'Please contact to support.'), 
+                "status_code": response.status_code
+            }
         
         
     def get_commit_by_branch(self, branch: str):
@@ -143,7 +203,7 @@ class GitHubAPIRequests():
             Args:
                 sha (str): Branch name of the commit to get
             
-            Return: [boolean, json/str, status_code]
+            Return: {"success": boolean, "data": json/str, "status_code": int}
         """
         
         logging.info("Get a commit by branch name")
@@ -151,20 +211,32 @@ class GitHubAPIRequests():
             url_request = f'{self.github_api_url}{self.github_repos_path}commits/{branch}'
             response = requests.get(url_request, headers=self.github_headers)
             response.raise_for_status()
-            return True, response.json(), response.status_code
+            return {
+                "success": True, 
+                "data": response.json(), 
+                "status_code": response.status_code
+            }
         except requests.exceptions.Timeout as timeout:
             logging.warning(timeout)
-            return False, "The provider is unavailable. Try again later.", response.status_code
+            return {
+                "success": False, 
+                "data": "The provider is unavailable. Try again later.", 
+                "status_code": response.status_code
+            }
         except Exception as e:
             logging.error(str(e))
-            return False, response,json().get('message', 'Please contact to support.'), response.status_code
+            return {
+                "success": False, 
+                "data": response.json().get('message', 'Please contact to support.'), 
+                "status_code": response.status_code
+            }
         
         
     def get_pull_requests(self):
         """
             Get all pull requests from the repo
             
-            Return: [boolean, json/str, status_code]
+            Return: {"success": boolean, "data": json/str, "status_code": int}
         """
         
         logging.info("Get all pull requests")
@@ -172,11 +244,23 @@ class GitHubAPIRequests():
             url_request = f'{self.github_api_url}{self.github_repos_path}pulls'
             response = requests.get(url_request, headers=self.github_headers)
             response.raise_for_status()
-            return True, response.json(), response.status_code
+            return {
+                "success": True, 
+                "data": response.json(), 
+                "status_code": response.status_code
+            }
         except requests.exceptions.Timeout as timeout:
             logging.warning(timeout)
-            return False, "The provider is unavailable. Try again later.", response.status_code
+            return {
+                "success": False, 
+                "data": "The provider is unavailable. Try again later.", 
+                "status_code": response.status_code
+            }
         except Exception as e:
             logging.error(str(e))
-            return False, response,json().get('message', 'Please contact to support.'), response.status_code
+            return {
+                "success": False, 
+                "data": response.json().get('message', 'Please contact to support.'), 
+                "status_code": response.status_code
+            }
         
