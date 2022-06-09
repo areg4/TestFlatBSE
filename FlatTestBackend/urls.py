@@ -39,7 +39,7 @@ urlpatterns = [
     path('api/v1/authors/', include('modules.authors.urls')),
     path('api/v1/branches/', include('modules.branches.urls')),
     path('api/v1/commits/', include('modules.commits.urls')),
-    path('api/v1/pull_requests/', include('modules.pull_request.urls')),
+    path('api/v1/pull-requests/', include('modules.pull_request.urls')),
     re_path(r'^api/v1/swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     re_path(r'^api/v1/docs/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 ]
