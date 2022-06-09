@@ -2,6 +2,8 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from Utils.GitHubAPIRequests import GitHubAPIRequests
+from .serializers import AuthorsSerializers
 
 
 # Authors views
@@ -18,4 +20,18 @@ class Authors(APIView):
     """
     
     def get(self, request, *args, **kwargs):
-        return Response({"data": "ok"}, status=status.HTTP_200_OK)
+        github_api_requests = GitHubAPIRequests()
+        authors = github_api_requests.get_collaborators()
+        if not authors['success']:
+            response = {
+                "success" : authors['success'],
+                "message": authors['data']
+            }
+            return Response(response, status=authors['status_code'])
+        authors_serializer = AuthorsSerializers(authors['data'], many=True)
+        response = {
+            "success" : authors['success'],
+            "message": "List of the Authors",
+            "data": authors_serializer.data
+        }
+        return Response(response, status=authors['status_code'])

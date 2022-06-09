@@ -2,6 +2,8 @@ from django.shortcuts import render
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from Utils.GitHubAPIRequests import GitHubAPIRequests
+from .serializers import PullRequestsSerializers
 
 
 # Pull Requests views
@@ -18,5 +20,19 @@ class Pull_Requests(APIView):
     """
     
     def get(self, request, *args, **kwargs):
-        return Response({"data": "ok"}, status=status.HTTP_200_OK)
+        github_api_requests = GitHubAPIRequests()
+        pull_requests = github_api_requests.get_pull_requests()
+        if not pull_requests['success']:
+            response = {
+                "success": pull_requests['success'],
+                "message": pull_requests['data']
+            }
+            return Response(response, status=pull_requests['status_code'])
+        pull_requests_serializer = PullRequestsSerializers(pull_requests["data"], many=True)
+        response = {
+            "success": pull_requests['success'],
+            "message": "List of all Pull Requests",
+            "data": pull_requests_serializer.data
+        }
+        return Response(response, status=pull_requests['status_code'])
     
