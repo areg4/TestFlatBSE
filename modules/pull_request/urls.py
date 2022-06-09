@@ -1,7 +1,7 @@
 from django.urls import path
-from .views import Pulls_Requests
+from .views import Pull_Requests
 
 
 urlpatterns = [
-    path('list/', Pulls_Requests.as_view(), name="list_all_pull_requests"),
+    path('list/', Pull_Requests.as_view(), name="list_all_pull_requests"),
 ]
