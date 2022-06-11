@@ -19,12 +19,44 @@ class Commits(APIView):
             summary: Endpoint to List Commits
             description: Get the commits in the repo.
             responses:
-                200:
-                    description: List the commits.
+                200: List commits.
+                400: Bad Request
+                401: Unauthorized
+                404: Not Found
+                408: Request Timeout
+                500: Internal Server Error
     """
     
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        operation_description="Get the commits in the repo.",
+        responses={
+            200: "Ok",
+            400: "Bad Request",
+            401: "Unauthorized",
+            404: "Not Found",
+            408: "Request Timeout",
+            500: "Internal Server Error"
+        }
+    )
     def get(self, request, *args, **kwargs):
+        """
+            Get the list of the commits in the repo.
+
+        Returns:
+            200: 
+                description: List commits
+            400:
+                description: Bad request
+            401:
+                description: Unauthorized
+            404:
+                description: Not found
+            408: 
+                description: Request Timeout
+            500:
+                description: Internal Server Error
+        """
+        
         try:
             github_api_requests = GitHubAPIRequests()
             commits = github_api_requests.get_commits()
@@ -50,9 +82,38 @@ class Commits(APIView):
             return Response(response, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     
+@swagger_auto_schema(
+    operation_description="Get commit details by SHA",
+    method='get',
+    responses={
+        200: "Ok",
+        400: "Bad Request",
+        401: "Unauthorized",
+        404: "Not Found",
+        408: "Request Timeout",
+        500: "Internal Server Error"
+    }
+)
 @api_view(['GET'])
-@swagger_auto_schema()
 def detail_commit_by_sha(request, sha):
+    """
+        Get commit details by sha.
+
+    Returns:
+        200: 
+            description: Commit details
+        400:
+            description: Bad request
+        401:
+            description: Unauthorized
+        404:
+            description: Not found
+        408: 
+            description: Request Timeout
+        500:
+            description: Internal Server Error
+    """
+    
     try:
         github_api_requests = GitHubAPIRequests()
         commit = github_api_requests.get_commit_by_sha(sha)
@@ -77,9 +138,38 @@ def detail_commit_by_sha(request, sha):
         return Response(response, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     
+@swagger_auto_schema(
+    method='get',
+    operation_description="Get commits by branch",
+    responses={
+        200: "Ok",
+        400: "Bad Request",
+        401: "Unauthorized",
+        404: "Not Found",
+        408: "Request Timeout",
+        500: "Internal Server Error"
+    }
+)
 @api_view(['GET'])
-@swagger_auto_schema()
 def commits_by_branch(request, branch_name):
+    """
+        Get commits by branch name.
+
+    Returns:
+        200: 
+            description: Commits by branch name
+        400:
+            description: Bad request
+        401:
+            description: Unauthorized
+        404:
+            description: Not found
+        408: 
+            description: Request Timeout
+        500:
+            description: Internal Server Error
+    """
+    
     try:
         github_api_requests = GitHubAPIRequests()
         commits = github_api_requests.get_commit_by_branch(branch_name)

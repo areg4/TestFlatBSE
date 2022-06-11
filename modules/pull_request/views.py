@@ -1,5 +1,6 @@
 import logging
 from django.shortcuts import render
+from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from .models import PullRequest
 from rest_framework import status
@@ -21,12 +22,54 @@ class Pull_Requests(APIView):
             summary: Endpoint to List Pull Requests
             description: Get the PRs in the repo.
             responses:
-                200:
-                    description: List the Pull Requests.
+                200: List Pull Requests.
+                400: Bad Request
+                401: Unauthorized
+                404: Not Found
+                408: Request Timeout
+                500: Internal Server Error
+        POST: 
+            summary: Endpoint to Create a Pull Request
+            description: Create a PR in the repo.
+            responses:
+                201: Pull Request created.
+                400: Bad Request
+                401: Unauthorized
+                422: Conflict whit the pull request
+                408: Request Timeout
+                500: Internal Server Error
     """
     
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        operation_description="Get the PRs in the repo.",
+        responses={
+            200: "Ok",
+            400: "Bad Request",
+            401: "Unauthorized",
+            404: "Not Found",
+            408: "Request Timeout",
+            500: "Internal Server Error"
+        }
+    )
     def get(self, request, *args, **kwargs):
+        """
+            Get the list of the PRs in the repo.
+
+        Returns:
+            200: 
+                description: List Pull requests
+            400:
+                description: Bad request
+            401:
+                description: Unauthorized
+            404:
+                description: Not found
+            408: 
+                description: Request Timeout
+            500:
+                description: Internal Server Error
+        """
+        
         try:
             github_api_requests = GitHubAPIRequests()
             pull_requests = github_api_requests.get_pull_requests()
@@ -52,8 +95,37 @@ class Pull_Requests(APIView):
             return Response(response, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     
-    @swagger_auto_schema()
+    @swagger_auto_schema(
+        operation_description="Create a PR in the repo.",
+        request_body=PostPullRequestSerializers,
+        responses={
+            201: "Pull Request created.",
+            400: "Bad Request",
+            401: "Unauthorized",
+            408: "Request Timeout",
+            422: "Conflict whit the pull request",
+            500: "Internal Server Error"
+        }
+    )
     def post(self, request, *args, **kwargs):
+        """
+            Create a PR in the repo.
+
+        Returns:
+            201: 
+                description: Pull request created
+            400:
+                description: Bad request
+            401:
+                description: Unauthorized
+            408: 
+                description: Request Timeout
+            422: 
+                description: Conflict whit the pull request
+            500:
+                description: Internal Server Error
+        """
+        
         try:
             post_pull_request_serializer = PostPullRequestSerializers(data=request.data)
             if not post_pull_request_serializer.is_valid():
@@ -95,9 +167,43 @@ class Pull_Requests(APIView):
             return Response(response, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
         
+@swagger_auto_schema(
+    method='get',
+    operation_description="Get Pull Request By Number",
+    manual_parameters=[
+        openapi.Parameter('pull_number', openapi.IN_PATH, 
+                          description="Pull Number", 
+                          type=openapi.TYPE_INTEGER)
+    ],
+    responses={
+        200: "Ok",
+        400: "Bad Request",
+        401: "Unauthorized",
+        404: "Not Found",
+        408: "Request Timeout",
+        500: "Internal Server Error"
+    }
+)
 @api_view(['GET'])
-@swagger_auto_schema()
 def pull_request_by_number(request, pull_number):
+    """
+        Get the Pull request by number.
+
+    Returns:
+        200: 
+            description: Pull request
+        400:
+            description: Bad request
+        401:
+            description: Unauthorized
+        404:
+            description: Not found
+        408: 
+            description: Request Timeout
+        500:
+            description: Internal Server Error
+    """
+        
     try:
         github_api_requests = GitHubAPIRequests()
         pull_request = github_api_requests.get_pull_request_by_number(pull_number)
@@ -123,9 +229,43 @@ def pull_request_by_number(request, pull_number):
         return Response(response, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     
+@swagger_auto_schema(
+    method='put',
+    operation_description="Merge a pull request",
+    manual_parameters=[
+        openapi.Parameter('pull_number', openapi.IN_PATH, 
+                          description="Pull Number", 
+                          type=openapi.TYPE_INTEGER)
+    ],
+    responses={
+        200: "Ok",
+        400: "Bad Request",
+        401: "Unauthorized",
+        408: "Request Timeout",
+        422: "Conflict whit the pull request",
+        500: "Internal Server Error"
+    }
+)
 @api_view(['PUT'])
-@swagger_auto_schema()
 def merge_pull_request(request, pull_number):
+    """
+        Merge the Pull request in the repo.
+
+    Returns:
+        200: 
+            description: Merge the pull request
+        400:
+            description: Bad request
+        401:
+            description: Unauthorized
+        408: 
+            description: Request Timeout
+        422: 
+            description: Conflict whit the pull request
+        500:
+            description: Internal Server Error
+    """
+    
     try:
         if not PullRequest.objects.filter(number=pull_number):
             response = {

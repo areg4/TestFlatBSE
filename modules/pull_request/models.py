@@ -3,6 +3,9 @@ from django.db import models
 
 # Pull Requests Model
 class PullRequest(models.Model):
+    """
+        PullRequest Model
+    """
     
     class StatusChoices(models.TextChoices):
         OPEN = 'open', 'open'

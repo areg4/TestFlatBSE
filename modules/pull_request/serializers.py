@@ -60,7 +60,7 @@ class PostPullRequestSerializers(serializers.ModelSerializer):
     class Meta:
         model = PullRequest
         exclude = ['created_at', 'updated_at']
-        read_only_fields = ['number', 'created_at', 'updated_at']
+        read_only_fields = ["status", 'number', 'created_at', 'updated_at']
 
 
 class SavePullRequestSerializers(serializers.ModelSerializer):
