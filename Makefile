@@ -9,3 +9,6 @@ local-rebuild:
 
 local-backend-logs:
 	docker-compose -f docker-compose.yml logs -f backend
+
+local-test:
+	pytest
