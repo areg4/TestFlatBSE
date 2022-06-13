@@ -13,4 +13,5 @@ RUN pip install -r /requirements.txt
 RUN apk del .tmp-build-deps
 
 RUN mkdir app/
+COPY . app/
 WORKDIR app/

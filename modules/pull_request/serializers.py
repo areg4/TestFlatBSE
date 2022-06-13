@@ -1,4 +1,6 @@
+from pyexpat import model
 from rest_framework import serializers
+from .models import PullRequest
 
 
 class PullRequestsSerializers(serializers.Serializer):
@@ -11,9 +13,10 @@ class PullRequestsSerializers(serializers.Serializer):
     id = serializers.CharField()
     html_url = serializers.CharField()
     number = serializers.IntegerField()
-    state = serializers.CharField()
+    status = serializers.SerializerMethodField()
     locked = serializers.BooleanField()
     title = serializers.CharField()
+    body = serializers.CharField()
     user = serializers.SerializerMethodField()
     created_at = serializers.DateTimeField()
     updated_at = serializers.DateTimeField()
@@ -22,6 +25,10 @@ class PullRequestsSerializers(serializers.Serializer):
     merge_commit_sha = serializers.CharField()
     head = serializers.SerializerMethodField()
     base = serializers.SerializerMethodField()
+    
+    
+    def get_status(self, obj):
+        return obj.get('state', '')
     
     
     def get_user(self, obj):
@@ -44,3 +51,30 @@ class PullRequestsSerializers(serializers.Serializer):
         except:
             return ''
         
+        
+class PostPullRequestSerializers(serializers.ModelSerializer):
+    """
+        Serializer for POST Pull Requests
+    """
+    
+    class Meta:
+        model = PullRequest
+        exclude = ['created_at', 'updated_at']
+        read_only_fields = ["status", 'number', 'created_at', 'updated_at']
+
+
+class SavePullRequestSerializers(serializers.ModelSerializer):
+    """
+        Serializer for Save Pull Requests
+    """
+    
+    description = serializers.SerializerMethodField()
+    
+    
+    def get_description(self, obj):
+        return obj.get('body', '')
+    
+    
+    class Meta:
+        model = PullRequest
+        exclude = ['id', 'created_at', 'updated_at']

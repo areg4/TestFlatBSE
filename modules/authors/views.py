@@ -1,5 +1,5 @@
 import logging
-from django.shortcuts import render
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -17,10 +17,49 @@ class Authors(APIView):
             description: Get the list of the authors (collaborators) in the repo.
             responses:
                 200: 
-                    description: List the Authors
+                    description: List Authors
+                400:
+                    description: Bad request
+                401: 
+                    description: Unauthorized
+                404:
+                    description: Not found
+                408:
+                    description: Request Timeout
+                500:
+                    description: Internal Server Error
     """
     
+    @swagger_auto_schema(
+        operation_description="Get the list of the authors (collaborators) in the repo.",
+        responses={
+            200: "Ok",
+            400: "Bad request",
+            401: "Unauthorized",
+            404: "Not found",
+            408: "Request Timeout",
+            500: "Internal Server Error"
+        }
+    )
     def get(self, request, *args, **kwargs):
+        """
+            Get the list of the authors (collaborators) in the repo.
+
+        Returns:
+            200: 
+                description: List Authors
+            400:
+                description: Bad request
+            401: 
+                description: Unauthorized
+            404:
+                description: Not found
+            408:
+                    description: Request Timeout
+            500:
+                description: Internal Server Error
+        """
+        
         try:
             github_api_requests = GitHubAPIRequests()
             authors = github_api_requests.get_collaborators()
